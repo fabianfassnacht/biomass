@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Biomass : R-Codes for RSE manuscript &quot;Importance of sample size, data type and prediction method for remote sensing-based estimations of aboveground forest biomass&quot;">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Biomass</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/fabianfassnacht/biomass">View on GitHub</a>
+
+          <h1 id="project_title">Biomass</h1>
+          <h2 id="project_tagline">R-Codes for RSE manuscript &quot;Importance of sample size, data type and prediction method for remote sensing-based estimations of aboveground forest biomass&quot;</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/fabianfassnacht/biomass/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/fabianfassnacht/biomass/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This wiki illustrates the workflow of the remote sensing-based biomass study presented in the manuscript:
+"Importance of sample size, data type and prediction method for remote sensing-based estimations of aboveground forest biomass" (submitted to Remote Sensing of Environment).</p>
+
+<p>R-Codes are provided and some graphs, showing the outputs of each processing step are shown for a better understanding of the processing chain.</p>
+
+<p><strong># Step 1 - Modelling</strong></p>
+
+<p>R-script named <strong>"1_modeling.R"</strong> will create all data needed for further processing steps. Required input is a tab-separated table in text-format which contains the biomass reference values as well as the remote sensing predictors (table 1). Furthermore, a identically structured table with the corresponding predictors (no biomass values) for the full test site - in our case calculated with the help of a fishnet-shapefile - should be provided (table 2).</p>
+
+<p>Figure 1 shows an example of an input table:</p>
+
+<p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_1.png" alt="figure1"></p>
+
+<p>The script will perform a stratified bootstrapping to create 500 bootstraps of the dataset. Additionally the sample size of the input dataset is varied four times (more details can be found in the manuscript mentioned above).</p>
+
+<p>Then the datasets will be fit using 5 different prediction methods (stepwise linear regression, support vector regression, random forest, gaussian processes, knn). Fitting and parameter tuning is accomplished using the "caret" package and a 5-fold cross-validation with 5 repetitions.</p>
+
+<p>Created outputs embrace:</p>
+
+<ol>
+<li>RData-files containing the wall-to-wall predictions (based on table 2) of each prediction method and sample size</li>
+<li>RData-files containing the predicted values calculated during the model building (based on table 1) of each prediction method and sample size</li>
+<li>RData-files containing the corresponding response values of the model building (based on table 1) of each prediction method and sample size</li>
+<li>TIFF files showing the summed Residual-Plots of each prediction method and sample size</li>
+<li>txt-files containing the cross-validated RMSE and r² values of each fitted model. Additionally, standard deviation of RMSE and r² are given, as well as: prediction method, sample size, input data type (sensor), test site, number of folds (k) in the k-fold cross validation</li>
+</ol><p><strong># Step 2 - Prepare ANOVA analysis</strong></p>
+
+<p>R-script named <strong>"2_preparation_ANOVA_merge_results.R</strong> will merge all txt-files created in step 1.  IMPORTANT: Some manual editing required. All .txt files created by "modeling.R" should be copied into one folder. Then the R-script should be run and all .txt files will be added and stored into a single text file.</p>
+
+<p>After merging the textfile a header has to be inserted manually into the first line of the textfile. The header should be (tab-separated):</p>
+
+<p>"RMSE"  "R2"    "RMSE_SD"   "R2_SD" "ExPoMeth"  "NumSamp"   "InData"    "Site"  "Folds"</p>
+
+<p><strong># Step 3 - ANOVA analysis</strong></p>
+
+<p>R-script named <strong>"3_anova_analysis.R</strong> will calculate the ANOVA and store results to a table.</p>
+
+<p><strong># Step 4 - calculate plots to have a summary of the obtained RMSE and r² values</strong></p>
+
+<p>R-script named <strong>"4_plotresults.R</strong> will create beanplots that summarize all results obtained during the model runs. Figure 2 shows a single example of the calculated plots.</p>
+
+<p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_2.png" alt="figure2"></p>
+
+<p>In Figure 2 the distribution of r² values obtained from the 500 bootrapped datasets fitted with a support vector regression is displayed. The colored horizontal stripes indicate the mean r² values of four applied sample sizes (increasing sample size from left to right). Black horizontal stripe shows overall mean r² value.</p>
+
+<p><strong># Step 5 - prepare the calculation of wall to wall biomass maps</strong></p>
+
+<p>This step reads the predictions for the full test area as created in Step 1 (from the RData-files). Summary statistics of the 500 bootstraps are calculated and added as an attribute to the fishnet-shapefile, that has originally been used to calculate table 2 (compare Step 1). Again: IMPORTANT: Some manual editing required all fullPred_<strong><em>.RData files created by "modeling.R" in Step 1 have to be copied into an own directory. Then the R-code entitled *</em>"5_preparation_biomass_map_plots"</strong> can be run.</p>
+
+<p><strong># Step 6 - calculate wall to wall biomass maps</strong></p>
+
+<p>In the last step the wall-to-wall biomass maps are calculated by using the script <strong>"6_biomass_map_plots.R"</strong>. As input serve the Shapefiles created in Step 5. Figure 3 shows an example of a calculated biomass map.</p>
+
+<p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_3.png" alt="figure1"></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Biomass maintained by <a href="https://github.com/fabianfassnacht">fabianfassnacht</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
