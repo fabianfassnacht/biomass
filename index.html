@@ -44,6 +44,8 @@
 
 <p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_1.png?raw=true" alt="figure1"></p>
 
+<p>Figure 1: Example of tab-separated input dataset, containing biomass values (response) and remote sensing predictors.</p>
+
 <p>The script will perform a stratified bootstrapping to create 500 bootstraps of the dataset. Additionally the sample size of the input dataset is varied four times (more details can be found in the manuscript mentioned above).</p>
 
 <p>Then the datasets will be fit using 5 different prediction methods (stepwise linear regression, support vector regression, random forest, gaussian processes, knn). Fitting and parameter tuning is accomplished using the "caret" package and a 5-fold cross-validation with 5 repetitions.</p>
@@ -74,17 +76,21 @@
 
 <p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_2.png?raw=true" alt="figure2"></p>
 
+<p>Figure 2: Example of a summarizing result plot.</p>
+
 <p>In Figure 2 the distribution of r² values obtained from the 500 bootrapped datasets fitted with a support vector regression is displayed. The colored horizontal stripes indicate the mean r² values of four applied sample sizes (increasing sample size from left to right). Black horizontal stripe shows overall mean r² value.</p>
 
 <p><strong># Step 5 - prepare the calculation of wall to wall biomass maps</strong></p>
 
-<p>This step reads the predictions for the full test area as created in Step 1 (from the RData-files). Summary statistics of the 500 bootstraps are calculated and added as an attribute to the fishnet-shapefile, that has originally been used to calculate table 2 (compare Step 1). Again: IMPORTANT: Some manual editing required all fullPred_<strong><em>.RData files created by "modeling.R" in Step 1 have to be copied into an own directory. Then the R-code entitled *</em>"5_preparation_biomass_map_plots"</strong> can be run.</p>
+<p>This step reads the predictions for the full test area as created in Step 1 (from the RData-files). Summary statistics of the 500 bootstraps are calculated and added as an attribute to the fishnet-shapefile, that has originally been used to calculate table 2 (compare Step 1). Again: IMPORTANT: Some manual editing is required. All fullPred_<strong><em>.RData files created by "modeling.R" in Step 1 have to be copied into an own directory. Then the R-code entitled *</em>"5_preparation_biomass_map_plots"</strong> can be run.</p>
 
 <p><strong># Step 6 - calculate wall to wall biomass maps</strong></p>
 
 <p>In the last step the wall-to-wall biomass maps are calculated by using the script <strong>"6_biomass_map_plots.R"</strong>. As input serve the Shapefiles created in Step 5. Figure 3 shows an example of a calculated biomass map.</p>
 
-<p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_3.png?raw=true" alt="figure1"></p>
+<p><img src="https://github.com/fabianfassnacht/biomass/blob/master/wiki_graphs/figure_3.png?raw=true" alt="figure3"></p>
+
+<p>Figure 3: An example of a calculated biomass map.</p>
       </section>
     </div>
 
